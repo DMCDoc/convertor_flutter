@@ -14,7 +14,6 @@ class MyForm extends StatefulWidget {
 
 class _MyFormState extends State<MyForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _maskController = TextEditingController();
   final List<TextEditingController> _octetControllers =
       List.generate(4, (_) => TextEditingController());
   final List<TextEditingController> _resultatControllers =
@@ -33,7 +32,7 @@ class _MyFormState extends State<MyForm> {
   }
 
   void _handleSubmit() {
-    print("Bouton Convert Pressé");
+    
     final form = _formKey.currentState;
     if (form!.validate()) {
       form.save();
