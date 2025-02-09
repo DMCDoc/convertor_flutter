@@ -1,18 +1,18 @@
-import 'package:convertisseur/reset_button.dart';
+import 'package:convertissor/reset_button.dart';
 import 'package:flutter/material.dart';
-import 'package:convertisseur/maskconvert.dart';
-import 'package:convertisseur/result-widget.dart';
-import 'package:convertisseur/textfied_widget.dart';
-import 'package:convertisseur/buttom_widget.dart';
+import 'package:convertissor/maskconvert.dart';
+import 'package:convertissor/result-widget.dart';
+import 'package:convertissor/textfied_widget.dart';
+import 'package:convertissor/buttom_widget.dart';
 
 class MyForm extends StatefulWidget {
   const MyForm({super.key});
 
   @override
-  _MyFormState createState() => _MyFormState();
+  MyFormState createState() => MyFormState();
 }
 
-class _MyFormState extends State<MyForm> {
+class MyFormState extends State<MyForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final List<TextEditingController> _octetControllers =
       List.generate(4, (_) => TextEditingController());
@@ -20,9 +20,20 @@ class _MyFormState extends State<MyForm> {
       List.generate(4, (_) => TextEditingController());
 
   final MaskConverter _maskConverter = MaskConverter();
+  bool _isValid = true; // Ajouter un état pour la validation globale
 
-  void _handleOctetChanged(int index, String value) {
-    if (value.length == 3) {
+  void _handleOctetChanged(int index, String value, String? error) {
+    if (error != null) {
+      setState(() {
+        _isValid = false; // Désactiver le bouton si une erreur existe
+      });
+    } else {
+      setState(() {
+        _isValid = true; // Activer le bouton si aucune erreur
+      });
+    }
+
+    if (value.length == 3 && _isValid) {
       if (index < 3) {
         FocusScope.of(context).nextFocus();
       } else {
@@ -32,7 +43,10 @@ class _MyFormState extends State<MyForm> {
   }
 
   void _handleSubmit() {
-    
+    if (!_isValid) {
+      return; // Ne pas soumettre si une erreur existe
+    }
+
     final form = _formKey.currentState;
     if (form!.validate()) {
       form.save();
@@ -63,6 +77,7 @@ class _MyFormState extends State<MyForm> {
       for (var controller in _resultatControllers) {
         controller.clear();
       }
+      _isValid = true; // Réinitialiser l'état de validation
     });
   }
 
@@ -86,7 +101,8 @@ class _MyFormState extends State<MyForm> {
                       padding: const EdgeInsets.symmetric(horizontal: 4),
                       child: OctetTextField(
                         controller: _octetControllers[i],
-                        onChanged: (value) => _handleOctetChanged(i, value),
+                        onChanged: (value, error) =>
+                            _handleOctetChanged(i, value, error),
                       ),
                     ),
                   ),
@@ -96,7 +112,8 @@ class _MyFormState extends State<MyForm> {
 
             // Affichage du résultat
             ResultWidget(
-              wildcardMask: _resultatControllers.map((c) => c.text).join("."), onSubmit: _handleSubmit,
+              wildcardMask: _resultatControllers.map((c) => c.text).join("."),
+              onSubmit: _handleSubmit,
             ),
 
             const SizedBox(height: 20),
@@ -105,7 +122,8 @@ class _MyFormState extends State<MyForm> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                ConvertButton(onPressed: _handleSubmit),
+                ConvertButton(onPressed: _handleSubmit,enabled: _isValid,),
+                
                 const SizedBox(width: 10),
                 ResetButton(onPressed: _handleReset),
               ],

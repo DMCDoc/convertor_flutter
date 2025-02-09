@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:convertisseur/app.dart';
+import 'package:convertissor/app.dart';
 import 'package:flutter/services.dart';
 
 void main() {
