@@ -42,14 +42,14 @@ class OctetTextFieldState extends State<OctetTextField> {
     return SizedBox(
       width: width * 0.2,
       height: height * 0.2,
-      child: TextField(
+      child: TextField(style: Theme.of(context).textTheme.bodyLarge,
         controller: widget.controller,
         textAlign: TextAlign.center,
-        decoration: InputDecoration(
+        decoration: InputDecoration(floatingLabelStyle: TextStyle(fontStyle: ),
           hintText: '0',
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10.0),
-            borderSide: const BorderSide(width: 10, color: Colors.black12),
+            borderSide: BorderSide(width: width * 0.01, color: Colors.black12),
           ),
           errorText: _errorText, // Afficher l'erreur si elle existe
         ),

@@ -9,7 +9,8 @@ class ConvertButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: onPressed,
+      onPressed:
+          enabled ? onPressed : null, // Désactiver si "enabled" est false
       child: const Text('Convert to Wildcard'),
     );
   }

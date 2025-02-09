@@ -2,8 +2,13 @@ import 'package:flutter/material.dart';
 
 class ResultWidget extends StatelessWidget {
   final String wildcardMask;
+  final VoidCallback onSubmit;
 
-  const ResultWidget({super.key, required this.wildcardMask, required void Function() onSubmit});
+  const ResultWidget({
+    super.key,
+    required this.wildcardMask,
+    required this.onSubmit,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +42,7 @@ class ResultWidget extends StatelessWidget {
                 ),
             ],
           ),
+        
       ],
     );
   }

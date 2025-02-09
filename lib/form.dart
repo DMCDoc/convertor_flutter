@@ -9,10 +9,10 @@ class MyForm extends StatefulWidget {
   const MyForm({super.key});
 
   @override
-  MyFormState createState() => MyFormState();
+  _MyFormState createState() => _MyFormState();
 }
 
-class MyFormState extends State<MyForm> {
+class _MyFormState extends State<MyForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final List<TextEditingController> _octetControllers =
       List.generate(4, (_) => TextEditingController());
@@ -22,17 +22,17 @@ class MyFormState extends State<MyForm> {
   final MaskConverter _maskConverter = MaskConverter();
   bool _isValid = true; // Ajouter un état pour la validation globale
 
-  void _handleOctetChanged(int index, String value, String? error) {
-    if (error != null) {
-      setState(() {
-        _isValid = false; // Désactiver le bouton si une erreur existe
+void _handleOctetChanged(int index, String value, String? error) {
+    // Vérifier la validité de chaque champ à chaque modification
+    setState(() {
+      _isValid = _octetControllers.every((controller) {
+        // Vérifier que chaque champ a une valeur correcte (entre 0 et 255)
+        int? val = int.tryParse(controller.text);
+        return val != null && val >= 0 && val <= 255;
       });
-    } else {
-      setState(() {
-        _isValid = true; // Activer le bouton si aucune erreur
-      });
-    }
+    });
 
+    // Si la validation est correcte et que l'utilisateur a tapé trois chiffres, passe au champ suivant
     if (value.length == 3 && _isValid) {
       if (index < 3) {
         FocusScope.of(context).nextFocus();
@@ -41,6 +41,7 @@ class MyFormState extends State<MyForm> {
       }
     }
   }
+
 
   void _handleSubmit() {
     if (!_isValid) {
@@ -122,8 +123,10 @@ class MyFormState extends State<MyForm> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                ConvertButton(onPressed: _handleSubmit,enabled: _isValid,),
-                
+                ConvertButton(
+                  onPressed: _handleSubmit,
+                  enabled: _isValid,
+                ),
                 const SizedBox(width: 10),
                 ResetButton(onPressed: _handleReset),
               ],
